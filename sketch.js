@@ -36,9 +36,11 @@ function setup(){
     log4 = new Log(760,120,150, PI/7);
     log5 = new Log(870,120,150, -PI/7);
 
-    bird = new Bird(300,100);
+    bird = new Bird(100,50);
 
-    chain = new Chain(bird.body,{x:300,y:100});
+    //log6 = new Log(230,180,80, PI/2);
+    slingshot = new SlingShot(bird.body,{x:200, y:50});
+    console.log(bird.body)
 }
 
 function draw(){
@@ -62,11 +64,15 @@ function draw(){
 
     bird.display();
     platform.display();
-    chain.display();    
+    //log6.display();
+    slingshot.display();    
 }
+
 function mouseDragged(){
-    Matter.Body.setPosition(bird.body,{x:mouseX,y:mouseY});
+    Matter.Body.setPosition(bird.body, {x: mouseX , y: mouseY});
 }
+
+
 function mouseReleased(){
-    chain.fly();
+    slingshot.fly();
 }
