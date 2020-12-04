@@ -2,14 +2,16 @@ const Engine = Matter.Engine;
 const World= Matter.World;
 const Bodies = Matter.Bodies;
 const Constraint = Matter.Constraint;
-var gameState='onsling';
+var score=0
 var engine, world;
-var box1, pig1;
+var box1, pig1,pig2;
 var backgroundImg,platform;
-var bird, slingShot;
+var bird, slingshot;
+var bg='sprites/bg.png'
+var gameState = "onSling";
 
 function preload() {
-    backgroundImg = loadImage("sprites/bg.png");
+    getTime();
 }
 
 function setup(){
@@ -28,7 +30,7 @@ function setup(){
 
     box3 = new Box(700,240,70,70);
     box4 = new Box(920,240,70,70);
-    pig3 = new Pig(810, 220);
+    pig2 = new Pig(810, 220);
 
     log3 =  new Log(810,180,300, PI/2);
 
@@ -43,9 +45,12 @@ function setup(){
 }
 
 function draw(){
+    if (backgroundImg)
     background(backgroundImg);
     Engine.update(engine);
     //strokeWeight(4);
+    pig1.scoring();
+    pig2.scoring()
     box1.display();
     box2.display();
     ground.display();
@@ -54,7 +59,7 @@ function draw(){
 
     box3.display();
     box4.display();
-    pig3.display();
+    pig2.display();
     log3.display();
 
     box5.display();
@@ -64,24 +69,40 @@ function draw(){
     bird.display();
     platform.display();
     //log6.display();
-    slingshot.display();    
+    slingshot.display();   
+    // fill('white');
+    text('Score:'+score,1100,30) 
 }
 
 function mouseDragged(){
-    if(gameState!=='launched'){
+    if (gameState!=="launched"){
         Matter.Body.setPosition(bird.body, {x: mouseX , y: mouseY});
     }
-    
 }
 
 
 function mouseReleased(){
     slingshot.fly();
-    gameState='launched';
+    gameState = "launched";
 }
 
 function keyPressed(){
-    if (keyCode==32){
-        slingshot.attached(bird.body);
+    if(keyCode === 32){
+       slingshot.attach(bird.body);
     }
+}
+
+async function getTime(){
+    var response=await fetch("http://worldtimeapi.org/api/timezone/Asia/Tokyo");
+    var responseJSON=await response.json();
+    console.log(responseJSON);
+    var datetime=responseJSON.datetime;
+    var hour=datetime.slice(11,13);
+    var hour=17
+    if (hour>=06 && hour<=15){
+        bg='sprites/bg.png'
+    }else{
+        bg='sprites/bg2.jpg'
+    }
+    backgroundImg = loadImage(bg);
 }
